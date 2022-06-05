@@ -1,0 +1,55 @@
+1. Move dump school66 to your local mysql database school66
+
+mysql> CREATE DATABASE school66;
+sasha@sasha:~/Desktop/python-Batwing-advanced/homeworks/databases$ mysql -u root -p school66 < school66.sql
+
+2. Create table level (В якому класі студент 10, 11) and make relation with students.
+
+mysql> USE school66;
+mysql> CREATE TABLE levels (id INT AUTO_INCREMENT PRIMARY KEY, grade INT NOT NULL, student_id INT NOT NULL);
+mysql> SHOW COLUMNS FROM levels;
++------------+------+------+-----+---------+----------------+
+| Field      | Type | Null | Key | Default | Extra          |
++------------+------+------+-----+---------+----------------+
+| id         | int  | NO   | PRI | NULL    | auto_increment |
+| grade      | int  | NO   |     | NULL    |                |
+| student_id | int  | NO   |     | NULL    |                |
++------------+------+------+-----+---------+----------------+
+3 rows in set (0,01 sec)
+
+mysql> INSERT INTO levels (grade, student_id) VALUES(10, 1), (11, 2), (10, 3), (11, 4);
+Query OK, 4 rows affected (0,03 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM levels;
++----+-------+------------+
+| id | grade | student_id |
++----+-------+------------+
+|  1 |    10 |          1 |
+|  2 |    11 |          2 |
+|  3 |    10 |          3 |
+|  4 |    11 |          4 |
++----+-------+------------+
+4 rows in set (0,00 sec)
+
+3. Make query which select all students with teacher, levels and lessons
+
+SELECT students.*, levels.grade, lessons.name FROM students INNER JOIN levels
+ON levels.student_id = students.id INNER JOIN students_lessons sl
+ON sl.student_id = students.id INNER JOIN lessons ON sl.lesson_id = lessons.id
+INNER JOIN teachers ON teachers.lesson_id = lessons.id;
++----+------------+-----------+-------+---------+----------------------+
+| id | first_name | last_name | grade | name    | name                 |
++----+------------+-----------+-------+---------+----------------------+
+|  2 | Petro      | Pravdoryb |    11 | Math    | Margaryta Ivanivna   |
+|  3 | Yuriy      | Skobylko  |    10 | Math    | Margaryta Ivanivna   |
+|  4 | Liubomyr   | Luzhnyi   |    11 | IT      | Yulia Liubomyrivna   |
+|  1 | Ivan       | Pidhaynuy |    10 | IT      | Yulia Liubomyrivna   |
+|  4 | Liubomyr   | Luzhnyi   |    11 | Biology | Roskolana Stepanivna |
+|  3 | Yuriy      | Skobylko  |    10 | Biology | Roskolana Stepanivna |
+|  2 | Petro      | Pravdoryb |    11 | Biology | Roskolana Stepanivna |
+|  4 | Liubomyr   | Luzhnyi   |    11 | Biology | Kateryna Yuriivna    |
+|  3 | Yuriy      | Skobylko  |    10 | Biology | Kateryna Yuriivna    |
+|  2 | Petro      | Pravdoryb |    11 | Biology | Kateryna Yuriivna    |
++----+------------+-----------+-------+---------+----------------------+
+
